@@ -33,7 +33,7 @@ jobs:
           name: android-arm32-apk
           path: build/app/outputs/flutter-apk/app-arm-release.apk
 
-  linux-arm32-build:
+  linux-arm64-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
       - run: flutter build linux --target-platform linux-arm64 --release
-      - name: Upload Linux ARM32 build
+      - name: Upload Linux ARM64 build
         uses: actions/upload-artifact@v4
         with:
           name: linux-arm64-bundle
