@@ -35,36 +35,33 @@ jobs:
           if-no-files-found: error
 
   linux-arm32-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.x'
-          channel: 'stable'
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.x'
+        channel: 'stable'
+        cache: true
 
-      - run: flutter pub get
+    - run: flutter pub get
 
-      # Run inside ARM32 emulation
-      - name: Build Linux ARM32
-        uses: pguyot/arm-runner-action@v2
-        with:
-          commands: |
-            sudo apt-get update
-            sudo apt-get install -y git
-            git clone https://github.com/flutter/flutter.git -b stable
-            export PATH="$PATH:`pwd`/flutter/bin"
-            flutter --version
-            flutter pub get
-            flutter build linux --target-platform linux-arm --release
+    - name: Build Linux ARM32
+      uses: pguyot/arm-runner-action@v2
+      with:
+        commands: |
+          export PATH="$PATH:$HOME/.flutter/bin"
+          flutter --version
+          flutter pub get
+          flutter build linux --target-platform linux-arm --release
 
-      - name: Upload Linux ARM32 build
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-arm32-bundle
-          path: build/linux/arm/release/bundle/
+    - name: Upload Linux ARM32 build
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-arm32-bundle
+        path: build/linux/arm/release/bundle/
 
 
   web-build:
