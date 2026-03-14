@@ -33,22 +33,32 @@ jobs:
           name: android-arm32-apk
           path: build/app/outputs/flutter-apk/app-arm-release.apk
 
-  linux-arm64-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.x'
-          channel: 'stable'
-      - run: flutter pub get
-      - run: flutter build linux --target-platform linux-arm64 --release
-      - name: Upload Linux ARM64 build
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-arm64-bundle
-          path: build/linux/arm64/release/bundle/
+  linux-arm32-build:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.x'
+        channel: 'stable'
+
+    - run: flutter pub get
+
+    # Run inside ARM32 emulation
+    - name: Build Linux ARM32
+      uses: pguyot/arm-runner-action@v2
+      with:
+        commands: |
+          flutter build linux --target-platform linux-arm --release
+
+    - name: Upload Linux ARM32 build
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-arm32-bundle
+        path: build/linux/arm/release/bundle/
+
 
   web-build:
     runs-on: ubuntu-latest
