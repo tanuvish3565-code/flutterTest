@@ -10,13 +10,13 @@ jobs:
   build-android-arm32:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
       - run: flutter pub get
       - run: flutter build apk --target-platform android-arm --release
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: android-arm32-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -24,13 +24,13 @@ jobs:
   build-linux-arm32:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
       - run: flutter pub get
       - run: flutter build linux --target-platform linux-arm --release
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-arm32-bundle
           path: build/linux/arm/release/bundle/
@@ -38,13 +38,13 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
       - run: flutter pub get
       - run: flutter build web --release
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: build/web/
@@ -52,13 +52,13 @@ jobs:
   build-windows-x64:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
       - run: flutter pub get
       - run: flutter build windows --target-platform windows-x64 --release
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-x64-exe
           path: build/windows/x64/release/bundle/
