@@ -51,6 +51,10 @@ jobs:
         uses: pguyot/arm-runner-action@v2
         with:
           commands: |
+            git clone https://github.com/flutter/flutter.git -b stable
+            export PATH="$PATH:`pwd`/flutter/bin"
+            flutter --version
+            flutter pub get
             flutter build linux --target-platform linux-arm --release
 
       - name: Upload Linux ARM32 build
