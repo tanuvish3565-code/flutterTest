@@ -1,68 +1,91 @@
-name: Flutter Build
+name: Flutter Multi-Platform Build
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  build-android-arm32:
+  android-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          flutter-version: '3.24.0'
-          channel: 'stable'
-      - run: flutter pub get
-      - run: flutter build apk --target-platform android-arm --release
-      - uses: actions/upload-artifact@v4
-        with:
-          name: android-arm32-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          distribution: 'zulu'
+          java-version: '17'
 
-  build-linux-arm32:
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter build apk --split-per-abi
+      
+      - name: Upload Android APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apks
+          path: build/app/outputs/flutter-apk/*.apk
+
+  linux-arm32-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.x'
           channel: 'stable'
       - run: flutter pub get
       - run: flutter build linux --target-platform linux-arm --release
-      - uses: actions/upload-artifact@v4
+      - name: Upload Linux ARM32 build
+        uses: actions/upload-artifact@v4
         with:
           name: linux-arm32-bundle
           path: build/linux/arm/release/bundle/
 
-  build-web:
+  web-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.x'
           channel: 'stable'
       - run: flutter pub get
       - run: flutter build web --release
-      - uses: actions/upload-artifact@v4
+      - name: Upload Web build
+        uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: build/web/
 
-  build-windows-x64:
+  windows-build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.x'
           channel: 'stable'
+          cache: true
+
       - run: flutter pub get
-      - run: flutter build windows --target-platform windows-x64 --release
-      - uses: actions/upload-artifact@v4
+      - run: flutter config --enable-windows-desktop
+      - run: flutter build windows --release
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
         with:
-          name: windows-x64-exe
-          path: build/windows/x64/release/bundle/
+          name: windows-x64-build
+          path: build/windows/x64/runner/Release/
+          if-no-files-found: error
